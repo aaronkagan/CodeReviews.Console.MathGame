@@ -9,6 +9,7 @@ var gameIsRunning = true;
 var startTime = DateTime.Now;
 var randomOperator = "";
 var score = 0;
+var divide = "---------";
 
 Console.WriteLine("Welcome to the math game!");
 
@@ -55,42 +56,76 @@ while (gameIsRunning)
     {
         Console.WriteLine("Wrong!");
     }
-
+    
+    previousGames.Add(@$"
+Question: {gameData[0]} {GetOperator(chosenOperation)} {gameData[1]}
+Your Answer: {userAnswer}
+Correct Answer: {gameData[2]}");
+    
     if (gameCount >= 5)
     {
         Console.WriteLine("Game Over");
         Console.WriteLine($"Your score was {score}");
         Console.WriteLine($"Your game time was {GetTimeElapsed()}");
-        
-        var chosenOption = AnsiConsole.Prompt(new SelectionPrompt<MenuChoices>()
-            .Title("What would you like to do?")
-            .AddChoices(
-                MenuChoices.Replay,
-                MenuChoices.History,
-                MenuChoices.Quit
-            )
-        );
 
-        if (chosenOption == MenuChoices.Replay)
+        var showMenu = true;
+
+        while (showMenu)
         {
-            score = 0;
-            gameCount = 0;
-            Console.Clear();
-            continue;
-        }
+            var chosenOption = AnsiConsole.Prompt(new SelectionPrompt<MenuChoices>()
+                .Title("What would you like to do?")
+                .AddChoices(
+                    MenuChoices.Replay,
+                    MenuChoices.History,
+                    MenuChoices.Quit
+                )
+            );
+
+            if (chosenOption == MenuChoices.Replay)
+            {
+                score = 0;
+                gameCount = 0;
+                Console.Clear();
+                break;
+            }
+
+            if (chosenOption == MenuChoices.History)
+            {
+                if (previousGames.Count == 0)
+                {
+                    Console.WriteLine("There are no previous games to show.");
+                }
+                else
+                { 
+                    ShowHistory();
+                }
+            }
         
-        if (chosenOption == MenuChoices.Quit)
-        {
-            gameIsRunning = false;
-            Console.WriteLine($"The total game time was {GetTimeElapsed()}");
-            Console.WriteLine("Goodbye");
+            if (chosenOption == MenuChoices.Quit)
+            {
+                gameIsRunning = false;
+                Console.WriteLine($"The total game time was {GetTimeElapsed()}");
+                Console.WriteLine("Goodbye");
+                break;
+                
+            }
         }
     }
 }
 
 void ShowHistory()
 {
+    Console.Clear();
+    Console.WriteLine(divide);
+    Console.WriteLine("Game History");
+    Console.WriteLine(divide);
     
+    foreach (var game in previousGames)
+    {
+        Console.WriteLine(game);
+    }
+
+    Console.WriteLine(divide);
 }
 
 string GetOperator(Operations chosenOperation)
