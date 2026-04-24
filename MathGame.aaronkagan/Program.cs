@@ -1,31 +1,69 @@
-﻿string[] levelsOfDifficulty = ["Easy", "Hard", "Genius"];
-string[] operations = ["Addition", "Subtraction", "Division", "Multiplication", "Random"];
+﻿using Spectre.Console;
+using static MathGame.aaronkagan.Enums;
+
 string[] operators = ["+", "-", "*", "/"];
-string[] previousGames = [];
-string levelOfDifficulty = "";
-var score = 0;
+List<string> previousGames = [];
+Difficulty difficulty;
+var gameCount = 0;
 var gameIsRunning = true; 
 var startTime = DateTime.Now;
 
 
+
 while (gameIsRunning)
 {
+    var chosenOperation = AnsiConsole.Prompt(new SelectionPrompt<Operations>()
+        .Title("Please choose an operation")
+        .AddChoices(
+            Operations.Addition,
+            Operations.Subtraction,
+            Operations.Multiplication,
+            Operations.Division,
+            Operations.Random
+            )
+    );
+     difficulty = AnsiConsole.Prompt(new SelectionPrompt<Difficulty>()
+        .Title("Please choose an operation")
+        .AddChoices(
+            Difficulty.Easy,
+            Difficulty.Hard,
+            Difficulty.Genius
+            )
+    );
     
-   
+    var gameData = GenerateQuestion(chosenOperation);
 
+    Console.WriteLine($"What is {gameData[0]} {chosenOperation} {gameData[1]}");
     
-    Console.WriteLine($"The total game time was {GetTimeElapsed()}");
-    Console.WriteLine("Would you like to play again? y/n");
-    var playAgain = Console.ReadLine();
-    if (playAgain.Trim().ToLower() == "n")
+    gameCount++;
+
+    var userAnswer = Console.ReadLine().Trim();
+
+    if (userAnswer == Convert.ToString(gameData[2]))
     {
-        gameIsRunning = false;
+        Console.WriteLine("Correct");
     }
+    else
+    {
+        Console.WriteLine("Wrong!");
+    }
+
+    if (gameCount >= 5)
+    {
+        Console.WriteLine("Would you like to play again? [y]/n");
+        var playAgain = Console.ReadLine();
+        if (playAgain.Trim().ToLower() == "n")
+        {
+            gameIsRunning = false;
+            Console.WriteLine($"The total game time was {GetTimeElapsed()}");
+            Console.WriteLine("Goodbye");
+        }
+    }
+    
+    
 }
 
-string ShowMenu()
-{
-}
+
 
 string GetTimeElapsed()
 {
@@ -36,17 +74,17 @@ string GetTimeElapsed()
     return $"{totalMinutes}:{(remainingSeconds < 10 ? "0" : "")}{remainingSeconds}";
 }
 
-int[] GetOperands()
+int[] GetOperands(Difficulty levelOfDifficulty)
 {
     var firstOperand = Random.Shared.Next(1, 11);
     var secondOperand = Random.Shared.Next(1, 11);
 
-    if (levelOfDifficulty == "Hard")
+    if (levelOfDifficulty == Difficulty.Hard)
     {
         firstOperand = Random.Shared.Next(11, 101);
         secondOperand = Random.Shared.Next(11, 101);
     }
-    if (levelOfDifficulty == "Genius")
+    if (levelOfDifficulty == Difficulty.Genius)
     {
         firstOperand = Random.Shared.Next(101, 1001);
         secondOperand = Random.Shared.Next(101, 1001);
@@ -55,37 +93,45 @@ int[] GetOperands()
     return [firstOperand, secondOperand];
 }
 
-int[] GenerateQuestion(string operation)
+int[] GenerateQuestion(Operations operation)
 {
     switch (operation)
     {
-        case "Addition":
+        case Operations.Addition:
         {
-            var firstOperand = GetOperands()[0];
-            var secondOperand = GetOperands()[1];
+            var operands = GetOperands(difficulty);
+            var firstOperand = operands[0];
+            var secondOperand = operands[1];
+
             var answer = firstOperand + secondOperand;
             return [firstOperand, secondOperand, answer];
         }
-        case "Subtraction":
+        case Operations.Subtraction:
         {
-            var firstOperand = GetOperands()[0];
-            var secondOperand = GetOperands()[1];
+            var operands = GetOperands(difficulty);
+            var firstOperand = operands[0];
+            var secondOperand = operands[1];
+
             var answer = firstOperand - secondOperand;
             return [firstOperand, secondOperand, answer];
         }
-        case "Multiplication":
+        case Operations.Multiplication:
         {
-            var firstOperand = GetOperands()[0];
-            var secondOperand = GetOperands()[1];
+            var operands = GetOperands(difficulty);
+            var firstOperand = operands[0];
+            var secondOperand = operands[1];
+
             var answer = firstOperand - secondOperand;
             return [firstOperand, secondOperand, answer];
         }
-        case "Division":
+        case Operations.Division:
         {
             while (true)
             {
-                var firstOperand = GetOperands()[0];
-                var secondOperand = GetOperands()[1];
+                var operands = GetOperands(difficulty);
+                var firstOperand = operands[0];
+                var secondOperand = operands[1];
+
 
                 if (firstOperand % secondOperand != 0)
                 {
@@ -94,9 +140,55 @@ int[] GenerateQuestion(string operation)
 
                 var answer = firstOperand / secondOperand;
                 return [firstOperand, secondOperand, answer];
-                
             }
+        }
+        case Operations.Random:
+        {
+
+            while (true)
+            {
+                var operands = GetOperands(difficulty);
+                var firstOperand = operands[0];
+                var secondOperand = operands[1];
+                var randomOperation = operators[Random.Shared.Next(0, 4)];
+            
+                if (randomOperation == "/" && firstOperand % secondOperand != 0)
+                {
+                    continue;
+                }
+
+                switch (randomOperation)
+                {
+                    case "+":
+                    {
+                        var answer =  firstOperand + secondOperand;
+                        return [firstOperand, secondOperand, answer];
+                    }
+                    case "-":
+                    {
+                        var answer =  firstOperand - secondOperand;
+                        return [firstOperand, secondOperand, answer];    
+                    }
+                    case "*":
+                    {
+                        var answer =  firstOperand * secondOperand;
+                        return [firstOperand, secondOperand, answer];    
+                    }
+                    case "/":
+                    {
+                        var answer =  firstOperand / secondOperand;
+                        return [firstOperand, secondOperand, answer];    
+                    }
+                        
+                }
+            }
+        }
+        default:
+        {
+            return [];
         }
     }
 }
+
+
 
