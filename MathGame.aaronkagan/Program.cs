@@ -2,12 +2,15 @@
 using static MathGame.aaronkagan.Enums;
 
 string[] operators = ["+", "-", "*", "/"];
-// List<string> previousGames = [];
+List<string> previousGames = [];
 Difficulty difficulty;
 var gameCount = 0;
 var gameIsRunning = true; 
 var startTime = DateTime.Now;
 var randomOperator = "";
+var score = 0;
+
+Console.WriteLine("Welcome to the math game!");
 
 while (gameIsRunning)
 {
@@ -23,6 +26,7 @@ while (gameIsRunning)
             Operations.Random
             )
     );
+    
      difficulty = AnsiConsole.Prompt(new SelectionPrompt<Difficulty>()
         .Title("Please choose an operation")
         .AddChoices(
@@ -31,6 +35,8 @@ while (gameIsRunning)
             Difficulty.Genius
             )
     );
+     
+     
     
     var gameData = GenerateQuestion(chosenOperation);
 
@@ -43,6 +49,7 @@ while (gameIsRunning)
     if (userAnswer == Convert.ToString(gameData[2]))
     {
         Console.WriteLine("Correct");
+        score++;
     }
     else
     {
@@ -51,16 +58,38 @@ while (gameIsRunning)
 
     if (gameCount >= 5)
     {
-        Console.WriteLine("Would you like another question? [y]/n");
-        var playAgain = Console.ReadLine();
-        if (playAgain.Trim().ToLower() == "n")
+        Console.WriteLine("Game Over");
+        Console.WriteLine($"Your score was {score}");
+        Console.WriteLine($"Your game time was {GetTimeElapsed()}");
+        
+        var chosenOption = AnsiConsole.Prompt(new SelectionPrompt<MenuChoices>()
+            .Title("What would you like to do?")
+            .AddChoices(
+                MenuChoices.Replay,
+                MenuChoices.History,
+                MenuChoices.Quit
+            )
+        );
+
+        if (chosenOption == MenuChoices.Replay)
+        {
+            score = 0;
+            gameCount = 0;
+            Console.Clear();
+            continue;
+        }
+        
+        if (chosenOption == MenuChoices.Quit)
         {
             gameIsRunning = false;
             Console.WriteLine($"The total game time was {GetTimeElapsed()}");
             Console.WriteLine("Goodbye");
         }
     }
-    
+}
+
+void ShowHistory()
+{
     
 }
 

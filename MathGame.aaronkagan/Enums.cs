@@ -1,6 +1,6 @@
 namespace MathGame.aaronkagan;
 
-internal class Enums
+ internal static class Enums
 {
     internal enum Operations
     {
@@ -16,5 +16,12 @@ internal class Enums
         Easy,
         Hard,
         Genius
+    }
+
+    internal enum MenuChoices
+    { 
+        Replay,
+        History,
+        Quit
     }
 }
