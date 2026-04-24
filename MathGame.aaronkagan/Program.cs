@@ -2,16 +2,19 @@
 using static MathGame.aaronkagan.Enums;
 
 string[] operators = ["+", "-", "*", "/"];
-List<string> previousGames = [];
+// List<string> previousGames = [];
 Difficulty difficulty;
 var gameCount = 0;
 var gameIsRunning = true; 
 var startTime = DateTime.Now;
+var randomOperator = "";
 
 
 
 while (gameIsRunning)
 {
+    randomOperator = operators[Random.Shared.Next(0, 4)];
+    
     var chosenOperation = AnsiConsole.Prompt(new SelectionPrompt<Operations>()
         .Title("Please choose an operation")
         .AddChoices(
@@ -33,7 +36,7 @@ while (gameIsRunning)
     
     var gameData = GenerateQuestion(chosenOperation);
 
-    Console.WriteLine($"What is {gameData[0]} {chosenOperation} {gameData[1]}");
+    Console.WriteLine($"What is {gameData[0]} {GetOperator(chosenOperation)} {gameData[1]}");
     
     gameCount++;
 
@@ -50,7 +53,7 @@ while (gameIsRunning)
 
     if (gameCount >= 5)
     {
-        Console.WriteLine("Would you like to play again? [y]/n");
+        Console.WriteLine("Would you like another question? [y]/n");
         var playAgain = Console.ReadLine();
         if (playAgain.Trim().ToLower() == "n")
         {
@@ -63,7 +66,24 @@ while (gameIsRunning)
     
 }
 
-
+string GetOperator(Operations chosenOperation)
+{
+    switch (chosenOperation)
+    {
+        case Operations.Addition:
+            return "+";
+        case Operations.Subtraction:
+            return "-";
+        case Operations.Multiplication:
+            return "*";
+        case Operations.Division:
+            return "/";
+        case Operations.Random:
+            return randomOperator;
+        default:
+            return "";
+    }
+}
 
 string GetTimeElapsed()
 {
@@ -121,7 +141,7 @@ int[] GenerateQuestion(Operations operation)
             var firstOperand = operands[0];
             var secondOperand = operands[1];
 
-            var answer = firstOperand - secondOperand;
+            var answer = firstOperand * secondOperand;
             return [firstOperand, secondOperand, answer];
         }
         case Operations.Division:
@@ -150,7 +170,7 @@ int[] GenerateQuestion(Operations operation)
                 var operands = GetOperands(difficulty);
                 var firstOperand = operands[0];
                 var secondOperand = operands[1];
-                var randomOperation = operators[Random.Shared.Next(0, 4)];
+                var randomOperation = randomOperator;
             
                 if (randomOperation == "/" && firstOperand % secondOperand != 0)
                 {
