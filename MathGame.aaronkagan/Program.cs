@@ -9,8 +9,6 @@ var gameIsRunning = true;
 var startTime = DateTime.Now;
 var randomOperator = "";
 
-
-
 while (gameIsRunning)
 {
     randomOperator = operators[Random.Shared.Next(0, 4)];
