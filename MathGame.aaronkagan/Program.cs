@@ -7,7 +7,7 @@ Difficulty difficulty;
 var gameCount = 0;
 var gameIsRunning = true; 
 var startTime = DateTime.Now;
-var randomOperator = "";
+string randomOperator;
 var score = 0;
 var divide = "----------------";
 
@@ -45,7 +45,12 @@ while (gameIsRunning)
     
     gameCount++;
 
-    var userAnswer = Console.ReadLine().Trim();
+    var userAnswer = Console.ReadLine();
+
+    if (userAnswer != null)
+    {
+        userAnswer = userAnswer.Trim();
+    }
 
     if (userAnswer == Convert.ToString(gameData[2]))
     {
@@ -67,10 +72,8 @@ Correct Answer: {gameData[2]}");
         Console.WriteLine("Game Over");
         Console.WriteLine($"Your score was {score}");
         Console.WriteLine($"Your game time was {GetTimeElapsed()}");
-
-        var showMenu = true;
-
-        while (showMenu)
+        
+        while (true)
         {
             var chosenOption = AnsiConsole.Prompt(new SelectionPrompt<MenuChoices>()
                 .Title("What would you like to do?")
