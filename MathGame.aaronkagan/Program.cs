@@ -3,7 +3,7 @@ using static MathGame.aaronkagan.Enums;
 
 string[] operators = ["+", "-", "*", "/"];
 List<string> previousGames = [];
-Difficulty difficulty;
+Difficulty difficulty = Difficulty.Easy;
 var gameCount = 0;
 var gameIsRunning = true; 
 var startTime = DateTime.Now;
@@ -15,6 +15,19 @@ Console.WriteLine("Welcome to the math game!");
 
 while (gameIsRunning)
 {
+    if (gameCount == 0)
+    {   
+        difficulty = AnsiConsole.Prompt(new SelectionPrompt<Difficulty>()
+            .Title("Please choose an level of difficulty")
+            .AddChoices(
+                Difficulty.Easy,
+                Difficulty.Hard,
+                Difficulty.Genius
+            )
+        );
+    }
+    
+    
     randomOperator = operators[Random.Shared.Next(0, 4)];
     
     var chosenOperation = AnsiConsole.Prompt(new SelectionPrompt<Operations>()
@@ -27,17 +40,6 @@ while (gameIsRunning)
             Operations.Random
             )
     );
-    
-     difficulty = AnsiConsole.Prompt(new SelectionPrompt<Difficulty>()
-        .Title("Please choose an operation")
-        .AddChoices(
-            Difficulty.Easy,
-            Difficulty.Hard,
-            Difficulty.Genius
-            )
-    );
-     
-     
     
     var gameData = GenerateQuestion(chosenOperation);
 
