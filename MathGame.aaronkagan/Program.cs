@@ -9,7 +9,7 @@ var gameIsRunning = true;
 var startTime = DateTime.Now;
 var randomOperator = "";
 var score = 0;
-var divide = "---------";
+var divide = "----------------";
 
 Console.WriteLine("Welcome to the math game!");
 
